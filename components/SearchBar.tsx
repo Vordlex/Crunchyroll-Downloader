@@ -95,8 +95,17 @@ const SearchBar: React.FunctionComponent = (props) => {
             return null
         }
         const meta = json.content.byId[id]
-        const streamsUrl = await ipcRenderer.invoke("get-streams")
-        const streamsJSON = await fetch(streamsUrl, {headers: {cookie}}).then((r) => r.json()).catch(() => null)
+        // let streamsUrl = await ipcRenderer.invoke("get-streams")
+        let streamsJSON = null as any
+        try {
+            const objectUrl = await ipcRenderer.invoke("get-object")
+            const keySig = objectUrl.split("?")[1]
+            const objectJSON = await fetch(`https://beta.crunchyroll.com/cms/v2/US/M3/crunchyroll/objects/${id}?${keySig}`, {headers: {cookie}}).then((r) => r.json())
+            const streamsUrl = `https://beta.crunchyroll.com${objectJSON.items[0].__links__.streams.href}?${keySig}`
+            streamsJSON = await fetch(streamsUrl, {headers: {cookie}}).then((r) => r.json()).catch(() => null)
+        } catch {
+            // ignore
+        }
         const episode = {...meta, episode_number: meta.episode_metadata.episode_number, duration: meta.episode_metadata.duration_ms, url,
         name: meta.title, series_name: meta.episode_metadata.series_title, collection_name: meta.episode_metadata.season_title, screenshot_image: {large_url: meta.images.thumbnail?.[0]?.[0].source}, bif_url: streamsJSON?.bifs?.[0]}
         return episode
@@ -158,7 +167,8 @@ const SearchBar: React.FunctionComponent = (props) => {
         let playback = json.content.byId[id].playback
         if (!playback) {
             const objectUrl = await ipcRenderer.invoke("get-object")
-            json = await fetch(objectUrl, {headers: {cookie}}).then((r) => r.json())
+            const keySig = objectUrl.split("?")[1]
+            json = await fetch(`https://beta.crunchyroll.com/cms/v2/US/M3/crunchyroll/objects/${id}?${keySig}`, {headers: {cookie}}).then((r) => r.json())
             playback = json.items?.[0].playback
         }
         const vilos = await fetch(playback, {headers: {cookie}}).then((r) => r.json())
@@ -203,7 +213,14 @@ const SearchBar: React.FunctionComponent = (props) => {
         } catch {
             return null
         }
-        const vilos = await fetch(json.content.byId[id].playback, {headers: {cookie}}).then((r) => r.json())
+        let playback = json.content.byId[id].playback
+        if (!playback) {
+            const objectUrl = await ipcRenderer.invoke("get-object")
+            const keySig = objectUrl.split("?")[1]
+            json = await fetch(`https://beta.crunchyroll.com/cms/v2/US/M3/crunchyroll/objects/${id}?${keySig}`, {headers: {cookie}}).then((r) => r.json())
+            playback = json.items?.[0].playback
+        }
+        const vilos = await fetch(playback, {headers: {cookie}}).then((r) => r.json())
         let subLang = functions.dashLocale(language)
         let subtitles = [] as string[]
         let subtitleNames = [] as string[]

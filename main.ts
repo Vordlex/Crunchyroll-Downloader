@@ -1,4 +1,4 @@
-import {app, BrowserWindow, ipcMain, dialog, shell, globalShortcut, session} from "electron"
+import {app, BrowserWindow, ipcMain, dialog, shell, globalShortcut, session, protocol} from "electron"
 import {autoUpdater} from "electron-updater"
 import path from "path"
 import fs from "fs"
@@ -522,7 +522,7 @@ if (!singleLock) {
       const cookie = details.requestHeaders["Cookie"]
       store.set("cookie", encodeURI(cookie))
     })
-    session.defaultSession.webRequest.onCompleted({urls: ["https://beta-api.crunchyroll.com/cms/*"]}, (details) => {
+    session.defaultSession.webRequest.onCompleted({urls: ["https://beta.crunchyroll.com/cms/*"]}, (details) => {
       if (details.url.includes("objects/")) store.set("object", encodeURI(details.url))
       if (details.url.includes("videos/")) store.set("streams", encodeURI(details.url))
     })

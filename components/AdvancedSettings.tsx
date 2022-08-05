@@ -1,7 +1,7 @@
 import {ipcRenderer} from "electron"
 import React, {useContext, useEffect, useState} from "react"
 import {Dropdown, DropdownButton} from "react-bootstrap"
-import {TemplateContext, VideoQualityContext, TypeContext, LanguageContext, QualityContext, FormatContext, QueueContext, EnglishDialectContext, SpanishDialectContext, PortugeuseDialectContext} from "../renderer"
+import {TemplateContext, VideoQualityContext, TypeContext, LanguageContext, QualityContext, FormatContext, QueueContext, EnglishDialectContext, SpanishDialectContext, PortugeuseDialectContext, RegionContext} from "../renderer"
 import "../styles/advancedsettings.less"
 
 const AdvancedSettings: React.FunctionComponent = (props) => {
@@ -16,6 +16,7 @@ const AdvancedSettings: React.FunctionComponent = (props) => {
     const {englishDialect, setEnglishDialect} = useContext(EnglishDialectContext)
     const {spanishDialect, setSpanishDialect} = useContext(SpanishDialectContext)
     const {portugeuseDialect, setPortugeuseDialect} = useContext(PortugeuseDialectContext)
+    const {region, setRegion} = useContext(RegionContext)
     const [cookieDeleted, setCookieDeleted] = useState(false)
 
     useEffect(() => {
@@ -42,10 +43,11 @@ const AdvancedSettings: React.FunctionComponent = (props) => {
         if (settings.englishDialect) setEnglishDialect(settings.englishDialect)
         if (settings.spanishDialect) setSpanishDialect(settings.spanishDialect)
         if (settings.portugeuseDialect) setPortugeuseDialect(settings.portugeuseDialect)
+        if (settings.region) setRegion(settings.region)
     }
 
     useEffect(() => {
-        ipcRenderer.invoke("store-settings", {template, videoQuality, queue, englishDialect, spanishDialect, portugeuseDialect})
+        ipcRenderer.invoke("store-settings", {template, videoQuality, queue, englishDialect, spanishDialect, portugeuseDialect, region})
     })
 
     const ok = () => {
@@ -63,6 +65,7 @@ const AdvancedSettings: React.FunctionComponent = (props) => {
         setEnglishDialect("US")
         setSpanishDialect("LA")
         setPortugeuseDialect("BR")
+        setRegion("US")
     }
 
     const changeTemplate = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -166,6 +169,23 @@ const AdvancedSettings: React.FunctionComponent = (props) => {
                                 <DropdownButton className="small-drop" title={portugeuseDialect} drop="down">
                                     <Dropdown.Item className="small-drop" active={portugeuseDialect === "BR"} onClick={() => setPortugeuseDialect("BR")}>BR</Dropdown.Item>
                                     <Dropdown.Item className="small-drop" active={portugeuseDialect === "PT"} onClick={() => setPortugeuseDialect("PT")}>PT</Dropdown.Item>
+                                </DropdownButton>
+                            </div>
+                            <div className="settings-row">
+                                <p className="settings-text">Region: </p>
+                                <DropdownButton className="small-drop" title={region} drop="down">
+                                    <Dropdown.Item className="small-drop" active={region === "US"} onClick={() => setRegion("US")}>US</Dropdown.Item>
+                                    <Dropdown.Item className="small-drop" active={region === "GB"} onClick={() => setRegion("GB")}>GB</Dropdown.Item>
+                                    <Dropdown.Item className="small-drop" active={region === "ES"} onClick={() => setRegion("ES")}>ES</Dropdown.Item>
+                                    <Dropdown.Item className="small-drop" active={region === "LA"} onClick={() => setRegion("LA")}>LA</Dropdown.Item>
+                                    <Dropdown.Item className="small-drop" active={region === "FR"} onClick={() => setRegion("FR")}>FR</Dropdown.Item>
+                                    <Dropdown.Item className="small-drop" active={region === "DE"} onClick={() => setRegion("DE")}>DE</Dropdown.Item>
+                                    <Dropdown.Item className="small-drop" active={region === "IT"} onClick={() => setRegion("IT")}>IT</Dropdown.Item>
+                                    <Dropdown.Item className="small-drop" active={region === "RU"} onClick={() => setRegion("RU")}>RU</Dropdown.Item>
+                                    <Dropdown.Item className="small-drop" active={region === "BR"} onClick={() => setRegion("BR")}>BR</Dropdown.Item>
+                                    <Dropdown.Item className="small-drop" active={region === "PT"} onClick={() => setRegion("PT")}>PT</Dropdown.Item>
+                                    <Dropdown.Item className="small-drop" active={region === "ME"} onClick={() => setRegion("ME")}>ME</Dropdown.Item>
+                                    <Dropdown.Item className="small-drop" active={region === "JP"} onClick={() => setRegion("JP")}>JP</Dropdown.Item>
                                 </DropdownButton>
                             </div>
                             <div className="settings-row">

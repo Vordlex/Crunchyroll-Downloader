@@ -27,6 +27,7 @@ export const QueueContext = React.createContext<any>(null)
 export const EnglishDialectContext = React.createContext<any>(null)
 export const SpanishDialectContext = React.createContext<any>(null)
 export const PortugeuseDialectContext = React.createContext<any>(null)
+export const RegionContext = React.createContext<any>(null)
 
 const App: React.FunctionComponent = () => {
   const [clearAll, setClearAll] = useState(false)
@@ -42,8 +43,10 @@ const App: React.FunctionComponent = () => {
   const [englishDialect, setEnglishDialect] = useState("US")
   const [spanishDialect, setSpanishDialect] = useState("LA")
   const [portugeuseDialect, setPortugeuseDialect] = useState("BR")
+  const [region, setRegion] = useState("US")
 
   return (
+    <RegionContext.Provider value={{region, setRegion}}>
     <PortugeuseDialectContext.Provider value={{portugeuseDialect, setPortugeuseDialect}}>
     <SpanishDialectContext.Provider value={{spanishDialect, setSpanishDialect}}>
     <EnglishDialectContext.Provider value={{englishDialect, setEnglishDialect}}>
@@ -81,6 +84,7 @@ const App: React.FunctionComponent = () => {
     </EnglishDialectContext.Provider>
     </SpanishDialectContext.Provider>
     </PortugeuseDialectContext.Provider>
+    </RegionContext.Provider>
   )
 }
 

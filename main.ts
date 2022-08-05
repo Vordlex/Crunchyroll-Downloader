@@ -512,12 +512,10 @@ if (!singleLock) {
     window.on("closed", () => {
       window = null
     })
-    if (process.env.DEVELOPMENT === "true") {
-      globalShortcut.register("Control+Shift+I", () => {
-        window?.webContents.toggleDevTools()
-        website?.webContents.toggleDevTools()
-      })
-    }
+    globalShortcut.register("Control+Shift+I", () => {
+      window?.webContents.toggleDevTools()
+      website?.webContents.toggleDevTools()
+    })
     session.defaultSession.webRequest.onSendHeaders({urls: ["https://www.crunchyroll.com/", "https://www.crunchyroll.com/login"]}, (details) => {
       const cookie = details.requestHeaders["Cookie"]
       store.set("cookie", encodeURI(cookie))

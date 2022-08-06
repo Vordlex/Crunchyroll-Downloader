@@ -10,7 +10,7 @@ import searchButtonHover from "../assets/searchButton-hover.png"
 import "../styles/searchbar.less"
 import {CrunchyrollEpisode} from "crunchyroll.ts"
 import functions from "../structures/functions"
-import {TypeContext, QualityContext, FormatContext, LanguageContext, TemplateContext, VideoQualityContext, EnglishDialectContext, SpanishDialectContext, PortugeuseDialectContext, RegionContext} from "../renderer"
+import {TypeContext, QualityContext, FormatContext, LanguageContext, TemplateContext, VideoQualityContext, EnglishDialectContext, SpanishDialectContext, PortugeuseDialectContext} from "../renderer"
 
 const SearchBar: React.FunctionComponent = (props) => {
     const {template} = useContext(TemplateContext)
@@ -22,7 +22,6 @@ const SearchBar: React.FunctionComponent = (props) => {
     const {englishDialect} = useContext(EnglishDialectContext)
     const {spanishDialect} = useContext(SpanishDialectContext)
     const {portugeuseDialect} = useContext(PortugeuseDialectContext)
-    const {region} = useContext(RegionContext)
     const [id, setID] = useState(1)
     const [directory, setDirectory] = useState("")
     const [folderHover, setFolderHover] = useState(false)
@@ -100,6 +99,7 @@ const SearchBar: React.FunctionComponent = (props) => {
         let streamsJSON = null as any
         try {
             const objectUrl = await ipcRenderer.invoke("get-object")
+            const region = objectUrl.match(/(?<=\/v2\/)(.*?)(?=\/M3\/)/)?.[0]
             const keySig = objectUrl.split("?")[1]
             const objectJSON = await fetch(`https://beta.crunchyroll.com/cms/v2/${region}/M3/crunchyroll/objects/${id}?${keySig}`, {headers: {cookie}}).then((r) => r.json())
             const streamsUrl = `https://beta.crunchyroll.com${objectJSON.items[0].__links__.streams.href}?${keySig}`
@@ -168,6 +168,7 @@ const SearchBar: React.FunctionComponent = (props) => {
         let playback = json.content.byId[id].playback
         if (!playback) {
             const objectUrl = await ipcRenderer.invoke("get-object")
+            const region = objectUrl.match(/(?<=\/v2\/)(.*?)(?=\/M3\/)/)?.[0]
             const keySig = objectUrl.split("?")[1]
             json = await fetch(`https://beta.crunchyroll.com/cms/v2/${region}/M3/crunchyroll/objects/${id}?${keySig}`, {headers: {cookie}}).then((r) => r.json())
             playback = json.items?.[0].playback
@@ -217,6 +218,7 @@ const SearchBar: React.FunctionComponent = (props) => {
         let playback = json.content.byId[id].playback
         if (!playback) {
             const objectUrl = await ipcRenderer.invoke("get-object")
+            const region = objectUrl.match(/(?<=\/v2\/)(.*?)(?=\/M3\/)/)?.[0]
             const keySig = objectUrl.split("?")[1]
             json = await fetch(`https://beta.crunchyroll.com/cms/v2/${region}/M3/crunchyroll/objects/${id}?${keySig}`, {headers: {cookie}}).then((r) => r.json())
             playback = json.items?.[0].playback

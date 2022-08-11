@@ -94,7 +94,7 @@ const SearchBar: React.FunctionComponent = (props) => {
         } catch {
             return null
         }
-        const meta = json.content.byId[id]
+        const meta = json.content.media.byId[id]
         // let streamsUrl = await ipcRenderer.invoke("get-streams")
         let streamsJSON = null as any
         try {
@@ -107,9 +107,10 @@ const SearchBar: React.FunctionComponent = (props) => {
         } catch {
             // ignore
         }
-        const episode = {...meta, episode_number: meta.episode_metadata.episode_number, duration: meta.episode_metadata.duration_ms, url,
-        name: meta.title, series_name: meta.episode_metadata.series_title, collection_name: meta.episode_metadata.season_title, screenshot_image: {large_url: meta.images.thumbnail?.[0]?.[0].source}, bif_url: streamsJSON?.bifs?.[0]}
-        return episode
+        const episode = { 
+            ...meta, episode_number: meta.episode_number, duration: meta.duration,url,
+            name: meta.title,series_name: meta.parentTitle,collection_name: meta.seasonTitle,screenshot_image: { large_url: meta.images.thumbnail?.[0]?.[0].source }, bif_url: streamsJSON?.bifs?.[0]}
+          return episode
     }
 
     const parseEpisodes = async (url: string, html?: string) => {
@@ -165,7 +166,7 @@ const SearchBar: React.FunctionComponent = (props) => {
         } catch {
             return null
         }
-        let playback = json.content.byId[id].playback
+        let playback = json.content.media.byId[id].playback
         if (!playback) {
             const objectUrl = await ipcRenderer.invoke("get-object")
             const region = objectUrl.match(/(?<=\/v2\/)(.*?)(?=\/M3\/)/)?.[0]
@@ -215,7 +216,7 @@ const SearchBar: React.FunctionComponent = (props) => {
         } catch {
             return null
         }
-        let playback = json.content.byId[id].playback
+        let playback = json.content.media.byId[id].playback
         if (!playback) {
             const objectUrl = await ipcRenderer.invoke("get-object")
             const region = objectUrl.match(/(?<=\/v2\/)(.*?)(?=\/M3\/)/)?.[0]
